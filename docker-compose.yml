@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    container_name: yii2_app
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www
+    ports:
+      - "9000:9000"
+
+  web:
+    image: nginx:latest
+    container_name: yii2_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  db:
+    command: --mysql-native-password=ON
+    image: mysql:8
+    container_name: yii2_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: yii2
+      MYSQL_USER: yii2user
+      MYSQL_PASSWORD: yii2pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+
+volumes:
+  db_data:
