@@ -12,8 +12,8 @@ use Yii;
  * @property float $price
  * @property string|null $photo
  * @property int $customer_id
- * @property int $created_at
- * @property int $updated_at
+ * @property int|null $created_at
+ * @property int|null $updated_at
  *
  * @property Customer $customer
  */
@@ -33,7 +33,7 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'price', 'customer_id', 'created_at', 'updated_at'], 'required'],
+            [['name', 'price', 'customer_id'], 'required'],
             [['price'], 'number'],
             [['customer_id', 'created_at', 'updated_at'], 'integer'],
             [['name', 'photo'], 'string', 'max' => 255],
