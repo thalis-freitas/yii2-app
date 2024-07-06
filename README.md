@@ -16,15 +16,15 @@
 
 ### Autenticação
 - [ ] Comando para criação de usuários no sistema
-- [ ] POST /api/v1/login
+- [ ] POST /login
 
 ### Clientes
-- [ ] GET /api/v1/loads (Listar dos clientes com paginação)
-- [ ] POST /api/v1/customer (Cadastro de cliente)
+- [ ] GET /customers (Listar dos clientes com paginação)
+- [ ] POST /customers/create (Cadastro de cliente)
 
 ### Produtos (Products)
-- [ ] GET /api/v1/products (Listar todos os produtos com paginação)
-- [ ] POST /api/v1/products (Cadastro de produto)
+- [ ] GET /products (Listar todos os produtos com paginação)
+- [ ] POST /products/create (Cadastro de produto)
 
 <div align="center">
   :construction: Em desenvolvimento...

@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%customer}}".
@@ -13,8 +15,8 @@ use Yii;
  * @property string|null $photo
  * @property string|null $gender
  * @property int|null $address_id
- * @property int $created_at
- * @property int $updated_at
+ * @property int|null $created_at
+ * @property int|null $updated_at
  *
  * @property Address $address
  * @property Product[] $products
@@ -29,13 +31,20 @@ class Customer extends \yii\db\ActiveRecord
         return '{{%customer}}';
     }
 
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'registration_number', 'created_at', 'updated_at'], 'required'],
+            [['name', 'registration_number'], 'required'],
             [['address_id', 'created_at', 'updated_at'], 'integer'],
             [['name', 'registration_number', 'photo', 'gender'], 'string', 'max' => 255],
             [['registration_number'], 'unique'],

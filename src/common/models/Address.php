@@ -14,8 +14,8 @@ use Yii;
  * @property string $city
  * @property string $state
  * @property string|null $complement
- * @property int $created_at
- * @property int $updated_at
+ * @property int|null $created_at
+ * @property int|null $updated_at
  *
  * @property Customer[] $customers
  */
@@ -35,7 +35,7 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['zip_code', 'street', 'number', 'city', 'state', 'created_at', 'updated_at'], 'required'],
+            [['zip_code', 'street', 'number', 'city', 'state'], 'required'],
             [['created_at', 'updated_at'], 'integer'],
             [['zip_code', 'street', 'number', 'city', 'state', 'complement'], 'string', 'max' => 255],
         ];
