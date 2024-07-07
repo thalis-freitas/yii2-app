@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%address}}".
@@ -19,7 +21,7 @@ use Yii;
  *
  * @property Customer[] $customers
  */
-class Address extends \yii\db\ActiveRecord
+class Address extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -27,6 +29,18 @@ class Address extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%address}}';
+    }
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
+    public function fields()
+    {
+        return ['id', 'zip_code', 'street', 'number', 'city', 'state', 'complement'];
     }
 
     /**
@@ -64,9 +78,9 @@ class Address extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|\common\models\query\CustomerQuery
      */
-    public function getCustomers()
+    public function getCustomer()
     {
-        return $this->hasMany(Customer::class, ['address_id' => 'id']);
+        return $this->hasOne(Customer::class, ['address_id' => 'id']);
     }
 
     /**

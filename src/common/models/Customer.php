@@ -3,8 +3,9 @@
 namespace common\models;
 
 use Yii;
-use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use common\traits\PhotoUploadTrait;
 
 /**
  * This is the model class for table "{{%customer}}".
@@ -21,8 +22,10 @@ use yii\behaviors\TimestampBehavior;
  * @property Address $address
  * @property Product[] $products
  */
-class Customer extends \yii\db\ActiveRecord
+class Customer extends ActiveRecord
 {
+    use PhotoUploadTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -38,6 +41,16 @@ class Customer extends \yii\db\ActiveRecord
         ];
     }
 
+    public function fields()
+    {
+        return ['id', 'name', 'registration_number', 'photo', 'address'];
+    }
+
+    public function extrafields()
+    {
+        return ['products'];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -48,7 +61,9 @@ class Customer extends \yii\db\ActiveRecord
             [['address_id', 'created_at', 'updated_at'], 'integer'],
             [['name', 'registration_number', 'photo', 'gender'], 'string', 'max' => 255],
             [['registration_number'], 'unique'],
+            [['registration_number'], 'validateCpf'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
+            [['photoFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -96,5 +111,51 @@ class Customer extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \common\models\query\CustomerQuery(get_called_class());
+    }
+
+    public function validateCpf($attribute, $params)
+    {
+        $cpf = $this->$attribute;
+
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+
+        if (!$this->hasValidLength($cpf)) {
+            $this->addError($attribute, 'Registration number must have 11 digits');
+            return;
+        }
+
+        if ($this->hasAllSameDigits($cpf) || !$this->isValidCpf($cpf)) {
+            $this->addError($attribute, 'Invalid registration number');
+            return;
+        }
+    }
+
+    private function hasValidLength($cpf)
+    {
+        return strlen($cpf) == 11;
+    }
+
+    private function hasAllSameDigits($cpf)
+    {
+        return preg_match('/(\d)\1{10}/', $cpf);
+    }
+
+    private function isValidCpf($cpf)
+    {
+        if ($cpf[9] != $this->calculateVerifierDigit($cpf, 9)) {
+            return false;
+        }
+
+        return $cpf[10] == $this->calculateVerifierDigit($cpf, 10);
+    }
+
+    private function calculateVerifierDigit($cpf, $length)
+    {
+        $sum = 0;
+        for ($i = 0; $i < $length; $i++) {
+            $sum += $cpf[$i] * (($length + 1) - $i);
+        }
+        $remainder = $sum % 11;
+        return ($remainder < 2) ? 0 : 11 - $remainder;
     }
 }
