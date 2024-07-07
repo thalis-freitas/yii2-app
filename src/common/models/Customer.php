@@ -16,10 +16,12 @@ use common\traits\PhotoUploadTrait;
  * @property string|null $photo
  * @property string|null $gender
  * @property int|null $address_id
+ * @property int|null $gender_id
  * @property int|null $created_at
  * @property int|null $updated_at
  *
  * @property Address $address
+ * @property Gender $gender
  * @property Product[] $products
  */
 class Customer extends ActiveRecord
@@ -43,7 +45,7 @@ class Customer extends ActiveRecord
 
     public function fields()
     {
-        return ['id', 'name', 'registration_number', 'photo', 'address'];
+        return ['id', 'name', 'registration_number', 'photo', 'address', 'gender'];
     }
 
     public function extrafields()
@@ -58,11 +60,12 @@ class Customer extends ActiveRecord
     {
         return [
             [['name', 'registration_number'], 'required'],
-            [['address_id', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'registration_number', 'photo', 'gender'], 'string', 'max' => 255],
+            [['address_id', 'gender_id', 'created_at', 'updated_at'], 'integer'],
+            [['name', 'registration_number', 'photo'], 'string', 'max' => 255],
             [['registration_number'], 'unique'],
             [['registration_number'], 'validateCpf'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
+            [['gender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gender::class, 'targetAttribute' => ['gender_id' => 'id']],
             [['photoFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
@@ -96,6 +99,16 @@ class Customer extends ActiveRecord
     }
 
     /**
+     * Gets query for [[Gender]].
+     *
+     * @return \yii\db\ActiveQuery|\common\models\query\GenderQuery
+     */
+    public function getGender()
+    {
+        return $this->hasOne(Gender::class, ['id' => 'gender_id']);
+    }
+
+    /**
      * Gets query for [[Products]].
      *
      * @return \yii\db\ActiveQuery|\common\models\query\ProductQuery
@@ -121,12 +134,12 @@ class Customer extends ActiveRecord
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
         if (!$this->hasValidLength($cpf)) {
-            $this->addError($attribute, Yii::t('app', 'Registration number must have 11 digits'));
+            $this->addError($attribute, Yii::t('error', 'Registration number must have 11 digits'));
             return;
         }
 
         if ($this->hasAllSameDigits($cpf) || !$this->isValidCpf($cpf)) {
-            $this->addError($attribute, Yii::t('app', 'Invalid registration number'));
+            $this->addError($attribute, Yii::t('error', 'Invalid registration number'));
             return;
         }
     }
