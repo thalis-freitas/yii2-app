@@ -22,7 +22,7 @@ class ModelUploader
                 $model->save(false);
                 return true;
             } else {
-                throw new \Exception('Failed to upload photo.');
+                throw new \Exception(Yii::t('app', 'Failed to upload photo.'));
             }
         } else {
             throw new \Exception(json_encode($model->errors));

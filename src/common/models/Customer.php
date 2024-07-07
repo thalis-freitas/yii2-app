@@ -73,14 +73,15 @@ class Customer extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'registration_number' => 'Registration Number',
-            'photo' => 'Photo',
-            'gender' => 'Gender',
-            'address_id' => 'Address ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => Yii::t('app', 'ID'),
+            'name' => Yii::t('app', 'Name'),
+            'registration_number' => Yii::t('app', 'Registration Number'),
+            'photo' => Yii::t('app', 'Photo'),
+            'gender_id' => Yii::t('app', 'Gender'),
+            'address_id' => Yii::t('app', 'Address ID'),
+            'gender_id' => Yii::t('app', 'Gender'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -120,12 +121,12 @@ class Customer extends ActiveRecord
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
         if (!$this->hasValidLength($cpf)) {
-            $this->addError($attribute, 'Registration number must have 11 digits');
+            $this->addError($attribute, Yii::t('app', 'Registration number must have 11 digits'));
             return;
         }
 
         if ($this->hasAllSameDigits($cpf) || !$this->isValidCpf($cpf)) {
-            $this->addError($attribute, 'Invalid registration number');
+            $this->addError($attribute, Yii::t('app', 'Invalid registration number'));
             return;
         }
     }
