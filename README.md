@@ -15,8 +15,8 @@
 ## Funcionalidades
 
 ### Autenticação
-- [ ] Comando para criação de usuários no sistema
-- [ ] POST /login
+- [x] Comando para criação de usuários no sistema
+- [x] POST /auth/login
 
 ### Clientes
 - [x] GET /customers (Listar dos clientes com paginação)
@@ -25,10 +25,6 @@
 ### Produtos (Products)
 - [x] GET /products (Listar todos os produtos com paginação)
 - [x] POST /products/create (Cadastro de produto)
-
-<div align="center">
-  :construction: Em desenvolvimento...
-</div>
 
 ## Como rodar a aplicação
 
@@ -145,3 +141,7 @@ docker compose down
 ```
 
 ## Documentação da API
+
+<div align="center">
+  :construction: Em desenvolvimento...
+</div>

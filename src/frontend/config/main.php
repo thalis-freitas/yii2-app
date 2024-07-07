@@ -46,6 +46,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'POST login' => 'auth/login',
             ],
         ],
         'i18n' => [
@@ -56,7 +57,6 @@ return [
                     'sourceLanguage' => 'en-US',
                     'fileMap' => [
                         'app' => 'app.php',
-                        'app/error' => 'error.php',
                     ],
                 ],
                 'error*' => [
@@ -67,7 +67,6 @@ return [
                         'error' => 'error.php',
                     ],
                 ],
-
             ],
         ],
     ],
