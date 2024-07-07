@@ -4,12 +4,12 @@ namespace frontend\controllers;
 
 use common\models\Address;
 use common\models\Customer;
-use yii\rest\ActiveController;
+use common\components\ModelUploader;
+use frontend\controllers\ApiController;
 use yii\web\Response;
 use yii\web\UnprocessableEntityHttpException;
-use common\components\ModelUploader;
 
-class CustomersController extends ActiveController
+class CustomersController extends ApiController
 {
     public $modelClass = Customer::class;
 

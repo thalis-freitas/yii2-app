@@ -11,10 +11,16 @@ trait PhotoUploadTrait
 
     public function uploadPhoto()
     {
+        $path = 'assets/uploads/photos/';
+        $directory = Yii::getAlias('@webroot/' . $path);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
         if ($this->photoFile) {
-            $filePath = Yii::getAlias('@webroot/uploads/photos/') . $this->photoFile->baseName . '.' . $this->photoFile->extension;
+            $filePath = $directory . $this->photoFile->baseName . '.' . $this->photoFile->extension;
             if ($this->photoFile->saveAs($filePath)) {
-                $this->photo = 'uploads/photos/' . $this->photoFile->baseName . '.' . $this->photoFile->extension;
+                $this->photo = $path . $this->photoFile->baseName . '.' . $this->photoFile->extension;
                 return true;
             }
             return false;
