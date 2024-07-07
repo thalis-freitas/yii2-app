@@ -19,12 +19,12 @@
 - [ ] POST /login
 
 ### Clientes
-- [ ] GET /customers (Listar dos clientes com paginação)
-- [ ] POST /customers/create (Cadastro de cliente)
+- [x] GET /customers (Listar dos clientes com paginação)
+- [x] POST /customers/create (Cadastro de cliente)
 
 ### Produtos (Products)
-- [ ] GET /products (Listar todos os produtos com paginação)
-- [ ] POST /products/create (Cadastro de produto)
+- [x] GET /products (Listar todos os produtos com paginação)
+- [x] POST /products/create (Cadastro de produto)
 
 <div align="center">
   :construction: Em desenvolvimento...
@@ -54,6 +54,88 @@ Suba os containers:
 
 ```
 docker compose up -d
+
+```
+Acesse o bash do app:
+
+```
+docker compose exec app bash
+
+```
+Rode o comando de inicialização:
+
+```
+php init
+
+```
+Escolha a opção [`0`] Development.
+
+Instale as dependências:
+
+```
+composer install
+
+```
+
+Atualize o conteúdo do arquivo `/src/common/config/main-local.php` para:
+
+```php
+<?php
+
+return [
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=yii2_db;dbname=yii2',
+            'username' => 'root',
+            'password' => 'root',
+            'charset' => 'utf8',
+        ],
+    ],
+];
+
+```
+
+### Configuração do banco de dados
+
+Acesse o bash do banco de dados:
+
+```
+docker compose exec db bash
+
+```
+
+Entre no MySQL como root:
+
+```
+mysql -u root -p
+
+```
+
+Insira a senha `root`.
+
+Altere o método de autenticação:
+
+```sql
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+```
+
+Saia do bash do db e entre no bash do app:
+```
+docker compose exec app bash
+
+```
+
+Execute as migrações:
+
+```
+php yii migrate
+
+```
+Semeie os dados de gêneros:
+```
+php yii seed/gender
+
 ```
 
 ## Como derrubar a aplicação
