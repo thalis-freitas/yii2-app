@@ -45,7 +45,16 @@ class Customer extends ActiveRecord
 
     public function fields()
     {
-        return ['id', 'name', 'registration_number', 'photo', 'address', 'gender'];
+        $fields = ['id', 'name', 'registration_number', 'photo', 'address', 'gender'];
+
+        $fields['photo'] = function ($model) {
+            if ($model->photo) {
+                return Yii::$app->request->hostInfo . '/' . $model->photo;
+            }
+            return null;
+        };
+
+        return $fields;
     }
 
     public function extrafields()

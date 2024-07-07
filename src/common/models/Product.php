@@ -41,7 +41,16 @@ class Product extends ActiveRecord
 
     public function fields()
     {
-        return ['id', 'name', 'price', 'photo', 'customer'];
+        $fields = ['id', 'name', 'price', 'photo', 'customer'];
+
+        $fields['photo'] = function ($model) {
+            if ($model->photo) {
+                return Yii::$app->request->hostInfo . '/' . $model->photo;
+            }
+            return null;
+        };
+
+        return $fields;
     }
 
     /**
