@@ -1,0 +1,7 @@
+<?php
+
+return [
+    'Invalid registration number' => 'CPF invalido',
+    'Registration number must have 11 digits' => 'O CPF deve ter 11 digitos',
+    'Failed to upload photo.' => 'Falha ao carregar a foto.',
+];

@@ -3,8 +3,9 @@
 namespace common\models;
 
 use Yii;
-use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use common\traits\PhotoUploadTrait;
 
 /**
  * This is the model class for table "{{%customer}}".
@@ -15,14 +16,18 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $photo
  * @property string|null $gender
  * @property int|null $address_id
+ * @property int|null $gender_id
  * @property int|null $created_at
  * @property int|null $updated_at
  *
  * @property Address $address
+ * @property Gender $gender
  * @property Product[] $products
  */
-class Customer extends \yii\db\ActiveRecord
+class Customer extends ActiveRecord
 {
+    use PhotoUploadTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -38,6 +43,16 @@ class Customer extends \yii\db\ActiveRecord
         ];
     }
 
+    public function fields()
+    {
+        return ['id', 'name', 'registration_number', 'photo', 'address', 'gender'];
+    }
+
+    public function extrafields()
+    {
+        return ['products'];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -45,10 +60,13 @@ class Customer extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'registration_number'], 'required'],
-            [['address_id', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'registration_number', 'photo', 'gender'], 'string', 'max' => 255],
+            [['address_id', 'gender_id', 'created_at', 'updated_at'], 'integer'],
+            [['name', 'registration_number', 'photo'], 'string', 'max' => 255],
             [['registration_number'], 'unique'],
+            [['registration_number'], 'validateCpf'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
+            [['gender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gender::class, 'targetAttribute' => ['gender_id' => 'id']],
+            [['photoFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -58,14 +76,15 @@ class Customer extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'registration_number' => 'Registration Number',
-            'photo' => 'Photo',
-            'gender' => 'Gender',
-            'address_id' => 'Address ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => Yii::t('app', 'ID'),
+            'name' => Yii::t('app', 'Name'),
+            'registration_number' => Yii::t('app', 'Registration Number'),
+            'photo' => Yii::t('app', 'Photo'),
+            'gender_id' => Yii::t('app', 'Gender'),
+            'address_id' => Yii::t('app', 'Address ID'),
+            'gender_id' => Yii::t('app', 'Gender'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -77,6 +96,16 @@ class Customer extends \yii\db\ActiveRecord
     public function getAddress()
     {
         return $this->hasOne(Address::class, ['id' => 'address_id']);
+    }
+
+    /**
+     * Gets query for [[Gender]].
+     *
+     * @return \yii\db\ActiveQuery|\common\models\query\GenderQuery
+     */
+    public function getGender()
+    {
+        return $this->hasOne(Gender::class, ['id' => 'gender_id']);
     }
 
     /**
@@ -96,5 +125,51 @@ class Customer extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \common\models\query\CustomerQuery(get_called_class());
+    }
+
+    public function validateCpf($attribute, $params)
+    {
+        $cpf = $this->$attribute;
+
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+
+        if (!$this->hasValidLength($cpf)) {
+            $this->addError($attribute, Yii::t('error', 'Registration number must have 11 digits'));
+            return;
+        }
+
+        if ($this->hasAllSameDigits($cpf) || !$this->isValidCpf($cpf)) {
+            $this->addError($attribute, Yii::t('error', 'Invalid registration number'));
+            return;
+        }
+    }
+
+    private function hasValidLength($cpf)
+    {
+        return strlen($cpf) == 11;
+    }
+
+    private function hasAllSameDigits($cpf)
+    {
+        return preg_match('/(\d)\1{10}/', $cpf);
+    }
+
+    private function isValidCpf($cpf)
+    {
+        if ($cpf[9] != $this->calculateVerifierDigit($cpf, 9)) {
+            return false;
+        }
+
+        return $cpf[10] == $this->calculateVerifierDigit($cpf, 10);
+    }
+
+    private function calculateVerifierDigit($cpf, $length)
+    {
+        $sum = 0;
+        for ($i = 0; $i < $length; $i++) {
+            $sum += $cpf[$i] * (($length + 1) - $i);
+        }
+        $remainder = $sum % 11;
+        return ($remainder < 2) ? 0 : 11 - $remainder;
     }
 }
