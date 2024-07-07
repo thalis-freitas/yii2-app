@@ -3,13 +3,13 @@
 namespace frontend\controllers;
 
 use common\models\Product;
+use common\components\ModelUploader;
+use frontend\controllers\ApiController;
 use yii\data\ActiveDataProvider;
-use yii\rest\ActiveController;
 use yii\web\Response;
 use yii\web\UnprocessableEntityHttpException;
-use common\components\ModelUploader;
 
-class ProductsController extends ActiveController
+class ProductsController extends ApiController
 {
     public $modelClass = Product::class;
 
