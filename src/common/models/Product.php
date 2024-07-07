@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use common\traits\PhotoUploadTrait;
 
 /**
  * This is the model class for table "{{%product}}".
@@ -17,14 +20,28 @@ use Yii;
  *
  * @property Customer $customer
  */
-class Product extends \yii\db\ActiveRecord
+class Product extends ActiveRecord
 {
+    use PhotoUploadTrait;
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
         return '{{%product}}';
+    }
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
+    public function fields()
+    {
+        return ['id', 'name', 'price', 'photo', 'customer'];
     }
 
     /**
