@@ -69,7 +69,7 @@ Instale as dependências:
 composer install
 ```
 
-Atualize o conteúdo do arquivo `/src/common/config/main-local.php` para:
+Atualize o conteúdo do arquivo `src/common/config/main-local.php` para:
 
 ```php
 <?php
@@ -128,7 +128,7 @@ php yii seed/gender
 Execute o comando para criar um novo usuário:
 
 ```
-php yii user/create <username> <password> <name>
+php yii user/create <login> <password> <name>
 ```
 
 ## Como derrubar a aplicação

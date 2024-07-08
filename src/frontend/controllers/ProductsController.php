@@ -43,6 +43,20 @@ class ProductsController extends ApiController
         ]);
     }
 
+    public function prepareDataProvider()
+    {
+        $query = $this->modelClass::find();
+        $customerId = \Yii::$app->request->get('customerId');
+
+        if ($customerId !== null) {
+            $query->andWhere(['customer_id' => $customerId]);
+        }
+
+        return new ActiveDataProvider([
+            'query' => $query,
+        ]);
+    }
+
     public function actionCreate()
     {
         $product = new Product();
