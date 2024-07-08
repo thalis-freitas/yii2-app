@@ -61,7 +61,7 @@ Rode o comando de inicialização:
 ```
 php init
 ```
-Escolha a opção [`0`] Development.
+Escolha a opção `[0] Development`.
 
 Instale as dependências:
 
@@ -119,9 +119,16 @@ Execute as migrações:
 ```
 php yii migrate
 ```
+
 Semeie os dados de gêneros:
 ```
 php yii seed/gender
+```
+
+Execute o comando para criar um novo usuário:
+
+```
+php yii user/create <username> <password> <name>
 ```
 
 ## Como derrubar a aplicação
