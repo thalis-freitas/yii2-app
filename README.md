@@ -166,7 +166,7 @@ As requisições da API configuradas com o [Bruno](https://www.usebruno.com/) es
 
 ```json
 {
-  "login": "user",
+  "login": "login",
   "password": "pass"
 }
 ```
@@ -179,7 +179,7 @@ Retorno `200` (Sucesso)
   "user": {
     "id": 2,
     "username": "user",
-    "login": "user",
+    "login": "login",
     "status": 10
   }
 }
@@ -192,7 +192,7 @@ Se o login ou a senha forem inválidos, o endpoint retornará um código de stat
 ```json
 {
   "name": "Unauthorized",
-  "message": "Invalid login or password.",
+  "message": "Login ou senha inválidos.",
   "code": 0,
   "status": 401,
   "type": "yii\\web\\UnauthorizedHttpException"
