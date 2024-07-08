@@ -38,7 +38,7 @@ class Gender extends ActiveRecord
 
     public function fields()
     {
-        $fields = parent::fields();
+        $fields = ['id', 'name'];
 
         $fields['name'] = function () {
             return Yii::t('app', $this->name);

@@ -41,7 +41,7 @@ class Product extends ActiveRecord
 
     public function fields()
     {
-        $fields = ['id', 'name', 'price', 'photo', 'customer'];
+        $fields = ['id', 'name', 'price', 'photo'];
 
         $fields['photo'] = function ($model) {
             if ($model->photo) {
@@ -51,6 +51,11 @@ class Product extends ActiveRecord
         };
 
         return $fields;
+    }
+
+    public function extrafields()
+    {
+        return ['customer'];
     }
 
     /**
