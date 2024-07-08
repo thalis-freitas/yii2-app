@@ -52,6 +52,7 @@ class Address extends ActiveRecord
             [['zip_code', 'street', 'number', 'city', 'state'], 'required'],
             [['created_at', 'updated_at'], 'integer'],
             [['zip_code', 'street', 'number', 'city', 'state', 'complement'], 'string', 'max' => 255],
+            ['zip_code', 'match', 'pattern' => '/^\d{5}-\d{3}$|^\d{8}$/', 'message' => Yii::t('error', 'The zip code must be in the format XXXXX-XXX or XXXXXXXX.')],
         ];
     }
 
