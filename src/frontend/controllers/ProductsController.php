@@ -32,7 +32,15 @@ class ProductsController extends ApiController
     {
         $actions = parent::actions();
         unset($actions['create']);
+        $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
         return $actions;
+    }
+
+    public function prepareDataProvider()
+    {
+        return new ActiveDataProvider([
+            'query' => $this->modelClass::find()->andWhere(['customer_id' => \Yii::$app->request->get('customerId')])
+        ]);
     }
 
     public function actionCreate()

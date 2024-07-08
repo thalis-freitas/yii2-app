@@ -48,6 +48,11 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public function fields()
+    {
+        return ['id', 'username', 'login', 'status'];
+    }
+
     /**
      * {@inheritdoc}
      */
