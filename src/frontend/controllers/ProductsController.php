@@ -38,13 +38,6 @@ class ProductsController extends ApiController
 
     public function prepareDataProvider()
     {
-        return new ActiveDataProvider([
-            'query' => $this->modelClass::find()->andWhere(['customer_id' => \Yii::$app->request->get('customerId')])
-        ]);
-    }
-
-    public function prepareDataProvider()
-    {
         $query = $this->modelClass::find();
         $customerId = \Yii::$app->request->get('customerId');
 
